@@ -60,7 +60,7 @@ Ensure the following are installed:
     ```
 
 ### Step 3: Add Durable Functions Code
-In function_app.py, paste:
+In `function_app.py`, paste:
 ```python
 import azure.functions as func
 import azure.durable_functions as df
@@ -90,15 +90,28 @@ def hello_orchestrator(context):
 def hello(city: str):
     return f"Hello {city}"
 ```
+#### Explanation
+- `http_start` is the client function which is the entry point for your Durable Function app. When someone sends a `POST` request to `/api/orchestrators/hello_orchestrator`, this function:
+    - Starts a new orchestration (hello_orchestrator)
+    - Returns `URLs` to check status, send events, or terminate the workflow
+- `hello_orchestrator` is the brain of the workflow. The orchestrator function:
+    - Runs in a deterministic way (can be replayed exactly)
+    - Calls the same activity function (hello) multiple times, passing in different city names
+    - Waits for each activity to finish before moving to the next
+    - Returns the list of results
+- `hello` is activity function. Activity functions are like building blocks of logic:
+    - They do a small piece of work (e.g., calling an API, processing data, or returning a greeting)
+    - Here, it just returns "Hello <city>" for whatever city it receives
 
 ### Step 4: Configure Azurite for Local Testing
 1. Edit local.settings.json:
-    ```{
+    ```
+    {
     "IsEncrypted": false,
     "Values": {
         "AzureWebJobsStorage": "UseDevelopmentStorage=true",
         "FUNCTIONS_WORKER_RUNTIME": "python"
-    }
+        }
     }
     ```
 2. Then start Azurite from Command Palette:
@@ -134,7 +147,6 @@ You should see output indicating that the app is running at:
     ### Start orchestration
     POST http://localhost:7071/api/orchestrators/hello_orchestrator
     Content-Type: application/json
-    {}
 
     ### Query status (replace with actual status URL from response)
     GET http://localhost:7071/runtime/webhooks/durabletask/instances/<instanceId>?taskHub=TestHubName&connection=Storage
