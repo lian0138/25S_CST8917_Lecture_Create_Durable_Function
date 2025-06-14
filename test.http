@@ -1,0 +1,13 @@
+### Start orchestration
+POST http://localhost:7071/api/orchestrators/hello_orchestrator
+Content-Type: application/json
+
+### Query status (replace with actual status URL from response)
+GET http://localhost:7071/runtime/webhooks/durabletask/instances/<instanceId>?taskHub=TestHubName&connection=Storage
+
+### Start orchestration
+POST https://8917inclass.azurewebsites.net/api/orchestrators/hello_orchestrator
+Content-Type: application/json
+
+### Query status (replace with actual status URL from response)
+GET https://8917inclass.azurewebsites.net/runtime/webhooks/durabletask/instances/<instanceId>?taskHub=TestHubName&connection=Storage
